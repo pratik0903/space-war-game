@@ -1,6 +1,6 @@
-#this is feature1
 import pygame
 import random
+import sys
 random_vel_increase=[0,1,2,3,4]
 win=pygame.display.set_mode((500,500))
 pygame.display.set_caption('sky wars')
@@ -26,7 +26,7 @@ class projectile:
         self.radius=radius
     @classmethod
     def bullet_addup(cls):
-        if(bullet_count_total<10):
+        if(bullet_count_total<7):
             cls.bullet_count_total+=1
     @classmethod
     def return_bullet_count(cls):
@@ -106,8 +106,8 @@ while run:
 
     while(len(alien_list)<lvl.lev):
         alien_list.append(enemy(0,0,50,50,(lvl.lev+random.choice(random_vel_increase)) ))
-        for i in alien_list:
-            print(i.x,i.y,i.width,i.height,i.vel)
+        # for alien in alien_list:
+            # print(alien.x,alien.y,alien.width,alien.height,alien.vel)
 
     for alien in alien_list:
         for bullet in bullets:
@@ -153,6 +153,9 @@ while run:
     pygame.display.update()
     for alien in alien_list:
         if(alien.visible):
+            if(alien.x+alien.width==500 and alien.y+alien.width==500):
+                print("you lose")
+                run=False
             if(round(ship.y+(ship.height/2))>alien.y and round(ship.y+(ship.height/2)) < alien.y+alien.height):
                 if(round(ship.x+(ship.width/2))>alien.x and round(ship.x+(ship.width/2)) < alien.x+alien.width):
                     score-=50
