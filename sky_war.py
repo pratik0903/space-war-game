@@ -1,7 +1,7 @@
 import pygame
 import random
 import sys
-random_vel_increase=[0,1,2,3,4]
+random_vel_increase=[0,1,2,3]
 win=pygame.display.set_mode((500,500))
 pygame.display.set_caption('sky wars')
 pygame.init()
@@ -18,7 +18,7 @@ class war_ship:
         pygame.display.update()
 
 class projectile:
-    bullet_count_total=5
+    bullet_count_total=3
     def __init__(self,x,y,radius):
         self.x=x
         self.y=y
@@ -47,7 +47,7 @@ class enemy:
     def move(self,win):
         if(self.y!=500):
             if(self.x+self.width+self.vel>500):
-                print('touched boundry')
+                # print('touched boundry')
                 self.x=0
                 self.y+=self.height
             self.x=self.x+self.vel
@@ -79,6 +79,7 @@ def redraw_win():
             alien_list.pop(alien_list.index(alien))
             lvl.increment()
             projectile.bullet_addup()
+            print(projectile.return_bullet_count())
             # print('length',len(alien_list),"level",lvl.lev)
 
     for bullet in bullets:
@@ -153,11 +154,12 @@ while run:
     pygame.display.update()
     for alien in alien_list:
         if(alien.visible):
-            if(alien.x+alien.width==500 and alien.y+alien.width==500):
-                print("you lose")
-                run=False
             if(round(ship.y+(ship.height/2))>alien.y and round(ship.y+(ship.height/2)) < alien.y+alien.height):
                 if(round(ship.x+(ship.width/2))>alien.x and round(ship.x+(ship.width/2)) < alien.x+alien.width):
                     score-=50
-                    print('hit')
+                    print('hit',alien.x,alien.y)
+            if(alien.x+alien.width==500 and alien.y+alien.width==500):
+                run=False
+                print("you lose")
+                print('Your final score is :',score)
 pygame.quit()
