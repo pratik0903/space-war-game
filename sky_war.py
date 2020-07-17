@@ -1,9 +1,14 @@
 import pygame
 import random
 import sys
-random_vel_increase=[0,1,2,3]
+random_vel_increase=[1,2]
 win=pygame.display.set_mode((500,500))
 pygame.display.set_caption('sky wars')
+
+bg=pygame.image.load("images/sky1.jpg")
+alienship=pygame.image.load("images/ufo1.png")
+player=pygame.image.load("images/jet1.png")
+
 pygame.init()
 class war_ship:
     def __init__(self,x,y,width,height,color):
@@ -14,7 +19,8 @@ class war_ship:
         self.color=color
         self.vel=10
     def draw(self):
-        pygame.draw.rect(win,self.color,(self.x,self.y,self.width,self.height))
+        # pygame.draw.rect(win,self.color,(self.x,self.y,self.width,self.height))
+        win.blit(player,(self.x,self.y))
         pygame.display.update()
 
 class projectile:
@@ -22,11 +28,11 @@ class projectile:
     def __init__(self,x,y,radius):
         self.x=x
         self.y=y
-        self.vel=10
+        self.vel=9
         self.radius=radius
     @classmethod
     def bullet_addup(cls):
-        if(bullet_count_total<7):
+        if(bullet_count_total<5):
             cls.bullet_count_total+=1
     @classmethod
     def return_bullet_count(cls):
@@ -40,7 +46,7 @@ class enemy:
         self.y=y
         self.width=width
         self.height=height
-        self.vel=8+vel
+        self.vel=7+vel
         self.health=100
         self.visible=True
 
@@ -52,11 +58,14 @@ class enemy:
                 self.y+=self.height
             self.x=self.x+self.vel
             #print(self.x,self.y,self.visible)
-            pygame.draw.rect(win,(0,255,0),(self.x,self.y,self.width,self.height))
+            # pygame.draw.rect(win,(0,255,0),(self.x,self.y,self.width,self.height))
+            win.blit(alienship,(self.x,self.y))
 
     def hit(self):
         if(self.health>0):
             self.health-=10
+        elif(self.x+self.width>500 and self.height+self.y==500):
+            self.visible=False
         else:
             self.visible=False
 #level class and lvl variable for doing alien list size manipulation
@@ -67,7 +76,7 @@ class level:
         self.lev+=1
 
 def redraw_win():
-    win.fill((0,0,0))
+    win.blit(bg,(0,0))
     text=font.render("Score : "+str(score),1,(255,255,255))
     win.blit(text,(350,10))
     ship.draw()
@@ -157,9 +166,16 @@ while run:
             if(round(ship.y+(ship.height/2))>alien.y and round(ship.y+(ship.height/2)) < alien.y+alien.height):
                 if(round(ship.x+(ship.width/2))>alien.x and round(ship.x+(ship.width/2)) < alien.x+alien.width):
                     score-=50
-                    print('hit',alien.x,alien.y)
-            if(alien.x+alien.width==500 and alien.y+alien.width==500):
+                    print('hit',alien.x,alien.y,alien_list.index(alien))
+            if(alien.y+alien.height==500 and alien.x+alien.width>470):
                 run=False
+                print(len(alien_list))
                 print("you lose")
                 print('Your final score is :',score)
+            if( (alien.y+alien.height==500 and alien.x+alien.width>470) and len(alien_list)==0):
+                run=False
+                print(len(alien_list))
+                print("you lose")
+                print('Your final score is :',score)
+
 pygame.quit()
